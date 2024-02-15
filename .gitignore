@@ -1,0 +1,7 @@
+*__pycache__*
+.idea
+*.png
+*.tif
+*.csv
+*.ruff_cache*
+*.ipynb_checkpoints*
