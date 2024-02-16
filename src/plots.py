@@ -20,13 +20,30 @@ def colorbar(mappable, cbar_min, cbar_max):
     return cbar
 
 
-def visualize_one(img: np.ndarray, order: int):
+def visualize_one(img: np.ndarray, order: int, **kwargs):
+    """visualize one mode
+
+    Parameters
+    ----------
+    img: np.ndarray
+        Zernike mode to be shown
+    order: int
+        order of the mode
+    kwargs:
+        'cmap': colormap of the plot, choose one valid for plt
+
+    Returns
+    -------
+
+    """
+    cmap = kwargs.get('cmap')
+    cbar_min = -1
+    cbar_max = 1
+
     fig = plt.figure(figsize=(_FIGSIZE, _FIGSIZE))
-    cbar_min = np.round(np.min(img), 2)
-    cbar_max = np.round(np.max(img), 2)
     norm = plt.Normalize(cbar_min, cbar_max)
     fig.add_subplot()
-    im = plt.imshow(img, norm=norm)
+    im = plt.imshow(img, norm=norm, cmap=cmap)
     colorbar(im, cbar_min, cbar_max)
     plt.xticks([])
     plt.yticks([])
@@ -34,7 +51,26 @@ def visualize_one(img: np.ndarray, order: int):
     plt.show()
 
 
-def visualize_all(imgs: np.ndarray, order: int, ncols: int):
+def visualize_all(imgs: np.ndarray, order: int, ncols: int, **kwargs):
+    """visualize all the modes up to a given order in a pyramid (bottom left of a square grid)
+
+    Parameters
+    ----------
+    imgs: np.ndarray
+        all the modes
+    order: int
+        the largest order of all the modes
+    ncols: int
+        number of columns in the figure
+    kwargs:
+        'cmap': colormap of the plot, choose one valid for plt
+
+    Returns
+    -------
+
+    """
+    cmap = kwargs.get('cmap')
+
     fig, axes = plt.subplots(ncols, ncols, figsize=(_FIGSIZE*1.5, _FIGSIZE*1))
     idx = 0
     for r, row in enumerate(axes):
@@ -44,8 +80,10 @@ def visualize_all(imgs: np.ndarray, order: int, ncols: int):
                 continue
             else:
                 img = imgs[:, :, idx]
-                im = ax.imshow(img)
+                im = ax.imshow(img, cmap=cmap)
+                # dymanic fontsize for the title, adjust title position
                 ax.set_title(f'{idx}', fontsize=int(_FONTSIZE*4/ncols), y=1.0, pad=0)
+                # only show the disk on which the polynomial is defined
                 h, w = img.shape
                 patch = patches.Circle((h//2, w//2), radius=h/2-1, transform=ax.transData)
                 im.set_clip_path(patch)

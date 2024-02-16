@@ -23,7 +23,11 @@ lookup_table = {
 }
 
 
-def zernike_polynomials(mode: tp.Union[int, str], size: int, passall: bool, show: bool) -> np.ndarray:
+def zernike_polynomials(mode: tp.Union[int, str],
+                        size: int,
+                        passall: bool,
+                        show: bool,
+                        **kwargs) -> np.ndarray:
     """ Computation of Zernike polynomials of (or up to) a given order
 
     Parameters
@@ -80,14 +84,14 @@ def zernike_polynomials(mode: tp.Union[int, str], size: int, passall: bool, show
         if show:
             _n, _ = pairs[-1]
             if _n == 0:
-                visualize_one(output, order)
+                visualize_one(output, order, **kwargs)
             else:
-                visualize_all(output, order, _n + 1)
+                visualize_all(output, order, _n + 1, **kwargs)
     else:
         _n, _l = pairs[-1]
         output = _zernike_nl(_n, _l, rho, phi, radius)
         if show:
-            visualize_one(output, order)
+            visualize_one(output, order, **kwargs)
     return output
 
 
