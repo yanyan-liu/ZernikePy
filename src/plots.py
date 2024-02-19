@@ -76,7 +76,7 @@ def visualize_all(imgs: np.ndarray, order: int, ncols: int, **kwargs):
     for r, row in enumerate(axes):
         for c, ax in enumerate(row):
             ax.set_axis_off()
-            if idx > order or c > r:
+            if idx >= order or c > r:
                 continue
             else:
                 img = imgs[:, :, idx]

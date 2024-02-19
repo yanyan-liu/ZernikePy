@@ -70,7 +70,7 @@ def zernike_polynomials(mode: tp.Union[int, str],
     n = 0
     pairs = []
     while True:
-        _pairs_n = [(n, l) for l in np.arange(-n, n + 1, 2) if (n * (n + 2) + l) / 2 <= order]
+        _pairs_n = [(n, l) for l in np.arange(-n, n + 1, 2) if (n * (n + 2) + l) / 2 < order]
         if _pairs_n:
             pairs.extend(_pairs_n)
             n += 1
