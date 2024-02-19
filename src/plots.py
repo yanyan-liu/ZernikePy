@@ -82,7 +82,7 @@ def visualize_all(imgs: np.ndarray, order: int, ncols: int, **kwargs):
                 img = imgs[:, :, idx]
                 im = ax.imshow(img, cmap=cmap)
                 # dymanic fontsize for the title, adjust title position
-                ax.set_title(f'{idx}', fontsize=int(_FONTSIZE*4/ncols), y=1.0, pad=0)
+                ax.set_title(f'{idx}', fontsize=int(_FONTSIZE*4/ncols), y=1.01, pad=0)
                 # only show the disk on which the polynomial is defined
                 h, w = img.shape
                 patch = patches.Circle((h//2, w//2), radius=h/2-1, transform=ax.transData)
