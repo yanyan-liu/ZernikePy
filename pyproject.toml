@@ -1,0 +1,18 @@
+[project]
+name = "zermode"
+version = "0.0.1"
+authors = [
+  { name="Yan Liu", email="yanyan@ik.me" },
+]
+description = "A light-weight Python package to generate individual or a series of Zernike polynomials of arbitrary order with visualization."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/yanyan-liu/zermode"
+Issues = "https://github.com/yanyan-liu/zermode/issues"
