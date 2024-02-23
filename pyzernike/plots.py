@@ -1,3 +1,5 @@
+import typing as tp
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -51,15 +53,15 @@ def visualize_one(img: np.ndarray, order: int, **kwargs):
     plt.show()
 
 
-def visualize_all(imgs: np.ndarray, order: int, ncols: int, **kwargs):
+def visualize_all(imgs: np.ndarray, orders: tp.List, ncols: int, **kwargs):
     """visualize all the modes up to a given order in a pyramid (bottom left of a square grid)
 
     Parameters
     ----------
     imgs: np.ndarray
         all the modes
-    order: int
-        the largest order of all the modes
+    orders: list
+        order of all the modes
     ncols: int
         number of columns in the figure
     kwargs:
@@ -70,23 +72,25 @@ def visualize_all(imgs: np.ndarray, order: int, ncols: int, **kwargs):
 
     """
     cmap = kwargs.get('cmap')
-
+    order_max = orders[-1]
     fig, axes = plt.subplots(ncols, ncols, figsize=(_FIGSIZE*1.5, _FIGSIZE*1))
     idx = 0
+    order_idx = 0
     for r, row in enumerate(axes):
         for c, ax in enumerate(row):
             ax.set_axis_off()
-            if idx >= order or c > r:
+            if c > r:
                 continue
-            else:
+            if order_idx in orders:
                 img = imgs[:, :, idx]
                 im = ax.imshow(img, cmap=cmap)
                 # dymanic fontsize for the title, adjust title position
-                ax.set_title(f'{idx}', fontsize=int(_FONTSIZE*4/ncols), y=1.01, pad=0)
+                ax.set_title(f'{order_idx}', fontsize=int(_FONTSIZE*4/ncols), y=1.01, pad=0)
                 # only show the disk on which the polynomial is defined
                 h, w = img.shape
                 patch = patches.Circle((h//2, w//2), radius=h/2-1, transform=ax.transData)
                 im.set_clip_path(patch)
                 idx += 1
-    fig.suptitle(f'All the Zernike modes up to order {order}', fontsize=_FONTSIZE)
+            order_idx += 1
+    fig.suptitle(f'Zernike modes up to order {order_max}', fontsize=_FONTSIZE)
     plt.show()
