@@ -59,9 +59,9 @@ def visualize_all(imgs: np.ndarray, orders: tp.List, ncols: int, **kwargs):
     Parameters
     ----------
     imgs: np.ndarray
-        all the modes
+        all the images in the list of orders
     orders: list
-        order of all the modes
+        list of all the modes
     ncols: int
         number of columns in the figure
     kwargs:
