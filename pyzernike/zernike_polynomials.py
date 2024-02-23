@@ -2,31 +2,32 @@ import typing as tp
 
 import numpy as np
 from scipy.special import binom
-from src.plots import visualize_all, visualize_one
+from pyzernike.plots import visualize_all, visualize_one
+
 
 lookup_table = {
-    'piston': 0,
-    'vertical tilt': 1,
-    'horizontal tilt': 2,
-    'oblique astigmatism': 3,
-    'defocus': 4,
-    'vertical astigmatism': 5,
-    'vertical trefoil': 6,
-    'vertical coma': 7,
-    'horizontal coma': 8,
-    'oblique trefoil': 9,
-    'oblique quadrafoil': 10,
-    'oblique secondary astigmatism': 11,
-    'primary spherical': 12,
-    'vertical secondary astigmatism': 13,
-    'vertical quadrafoil': 14
+    'piston': 1,
+    'vertical tilt': 2,
+    'horizontal tilt': 3,
+    'oblique astigmatism': 4,
+    'defocus': 5,
+    'vertical astigmatism': 6,
+    'vertical trefoil': 7,
+    'vertical coma': 8,
+    'horizontal coma': 9,
+    'oblique trefoil': 10,
+    'oblique quadrafoil': 11,
+    'oblique secondary astigmatism': 12,
+    'primary spherical': 13,
+    'vertical secondary astigmatism': 14,
+    'vertical quadrafoil': 15
 }
 
 
-def zernike_polynomials(mode: tp.Union[int, str],
-                        size: int,
-                        passall: bool,
-                        show: bool,
+def zernike_polynomials(mode: tp.Union[int, str] = 5,
+                        size: int = 128,
+                        passall: bool = False,
+                        show: bool = False,
                         **kwargs) -> np.ndarray:
     """ Computation of Zernike polynomials of (or up to) a given order
 
@@ -54,7 +55,6 @@ def zernike_polynomials(mode: tp.Union[int, str],
             raise ValueError(f'Invalid name {mode} for the mode. Try its index instead.')
     else:
         order = mode
-    # TODO: is the following check still useful?
     if type(order) is not int:
         raise TypeError(f'order should be an integer, not {type(order)}')
     elif order < 0:
@@ -66,7 +66,7 @@ def zernike_polynomials(mode: tp.Union[int, str],
     # create mesh
     radius = size / 2
     rho, phi = create_mesh(size, radius)
-    # find (n, l) pairs such that n(n+2)+l/2 <= order
+    # find (n, l) pairs such that n(n+2)+l/2 < order
     n = 0
     pairs = []
     while True:
