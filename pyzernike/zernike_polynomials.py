@@ -4,29 +4,30 @@ import numpy as np
 from scipy.special import binom
 from pyzernike.plots import visualize_all, visualize_one
 
+ModeType = tp.Union[int, str]
 
 lookup_table = {
-    'piston': 1,
-    'vertical tilt': 2,
-    'horizontal tilt': 3,
-    'oblique astigmatism': 4,
-    'defocus': 5,
-    'vertical astigmatism': 6,
-    'vertical trefoil': 7,
-    'vertical coma': 8,
-    'horizontal coma': 9,
-    'oblique trefoil': 10,
-    'oblique quadrafoil': 11,
-    'oblique secondary astigmatism': 12,
-    'primary spherical': 13,
-    'vertical secondary astigmatism': 14,
-    'vertical quadrafoil': 15
+    'piston': 0,
+    'vertical tilt': 1,
+    'horizontal tilt': 2,
+    'oblique astigmatism': 3,
+    'defocus': 4,
+    'vertical astigmatism': 5,
+    'vertical trefoil': 6,
+    'vertical coma': 7,
+    'horizontal coma': 8,
+    'oblique trefoil': 9,
+    'oblique quadrafoil': 10,
+    'oblique secondary astigmatism': 11,
+    'primary spherical': 12,
+    'vertical secondary astigmatism': 13,
+    'vertical quadrafoil': 14
 }
 
 
-def zernike_polynomials(mode: tp.Union[int, str] = 5,
+def zernike_polynomials(mode: tp.Union[int, str] = 'defocus',
+                        select: tp.Union[int, str, tp.List[ModeType]] = None,
                         size: int = 128,
-                        passall: bool = False,
                         show: bool = False,
                         **kwargs) -> np.ndarray:
     """ Computation of Zernike polynomials of (or up to) a given order
@@ -34,13 +35,19 @@ def zernike_polynomials(mode: tp.Union[int, str] = 5,
     Parameters
     ----------
     mode: int, str
-        if int: OSA order of the Zernike polynomial; if str: find the corresponding order in the lookuptable
+        default: 'defocus'
+        if int: OSA order of the Zernike polynomial; if str: find the corresponding OSA order in the lookuptable
+    select: int, str, list
+        default: None
+        None: use the specified order in 'mode'
+        'all': use all the orders up to 'mode'
+        list: use orders specified in this list
     size: int
+        default: 128
         number of pixels of the length of the image
-    passall: bool
-        return all polynomials up to the given order. If false, only return one polynomial with the given order
     show: bool
-        plot the polymonials or not
+        default: False
+        plot the images or not
     Returns
     -------
 
@@ -49,49 +56,40 @@ def zernike_polynomials(mode: tp.Union[int, str] = 5,
     Ref. https://en.wikipedia.org/wiki/Zernike_polynomials#Zernike_polynomials
     """
     # validate input variables
-    if type(mode) is str:
-        order = lookup_table.get(mode.lower())
-        if order is None:
-            raise ValueError(f'Invalid name {mode} for the mode. Try its index instead.')
-    else:
-        order = mode
-    if type(order) is not int:
-        raise TypeError(f'order should be an integer, not {type(order)}')
-    elif order < 0:
-        raise ValueError(f'order should be a positive integer')
-
-    if type(size) is not int:
-        raise TypeError(f'size should be an integer, not {type(size)}')
-
+    orders = _validate_inputs(mode, select, size)
+    order_max = orders[-1]
     # create mesh
     radius = size / 2
     rho, phi = create_mesh(size, radius)
-    # find (n, l) pairs such that n(n+2)+l/2 < order
+    # find (n, l) pairs such that n(n+2)+l/2 in orders
     n = 0
     pairs = []
-    while True:
-        _pairs_n = [(n, l) for l in np.arange(-n, n + 1, 2) if (n * (n + 2) + l) / 2 < order]
-        if _pairs_n:
-            pairs.extend(_pairs_n)
-            n += 1
-        else:
-            break
+    break_loop = False
+    while not break_loop:
+        for l in range(-n, n + 1, 2):
+            j = (n * (n + 2) + l) / 2
+            if j in orders:
+                pairs.append((n, l))
+            if j > order_max:
+                break_loop = True
+        n += 1
+
     # compute the polynomial(s)
-    if not pairs:
-        raise ValueError(f'No Zernike polynomial of order {order} is found')
-    elif passall:
+    print(pairs, len(pairs))
+    n_pairs  = len(pairs)
+    if n_pairs == 0:
+        raise ValueError(f'No Zernike polynomial of mode(s): {orders} found')
+    elif n_pairs == 1:
+        n, l = pairs[0]
+        output = _zernike_nl(n, l, rho, phi, radius)
+        if show:
+            visualize_one(output, orders[0], **kwargs)
+    else:
         output = np.dstack([_zernike_nl(n, l, rho, phi, radius) for (n, l) in pairs])
         if show:
             _n, _ = pairs[-1]
-            if _n == 0:
-                visualize_one(output, order, **kwargs)
-            else:
-                visualize_all(output, order, _n + 1, **kwargs)
-    else:
-        _n, _l = pairs[-1]
-        output = _zernike_nl(_n, _l, rho, phi, radius)
-        if show:
-            visualize_one(output, order, **kwargs)
+            visualize_all(output, orders, _n + 1, **kwargs)
+
     return output
 
 
@@ -149,3 +147,71 @@ def create_mesh(size: int, radius: float):
     rho = np.sqrt(xx ** 2 + yy ** 2)
     phi = np.angle(xx + 1j * yy)
     return rho, phi
+
+def _validate_individual_mode(mode: ModeType) -> int:
+    """Validate the variable 'mode'
+    - Check the type of the variable
+    - check the value of the variable
+
+    Parameters
+    ----------
+    mode: ModeType
+
+    Returns
+    -------
+
+    """
+    if type(mode) is int:
+        if mode < 0:
+            raise ValueError('please provide a nonnegative integer!')
+    elif type(mode) is str:
+        mode_str = mode
+        mode = lookup_table.get(mode.lower())
+        if mode is None:
+            raise ValueError(f'Invalid name {mode_str} for the mode. Try its index instead.')
+    else:
+        raise TypeError(f'Unkown mode type {type(mode)}, it should be int or str')
+    return mode
+
+
+def _validate_inputs(
+        mode: ModeType,
+        select: tp.Union[int, str, tp.List[ModeType], None],
+        size: int) -> tp.List[int]:
+    """Validate all the input variables
+
+    Parameters
+    ----------
+    mode: ModeType
+    select: int, str, list
+    size: int
+
+    Returns
+    -------
+
+    """
+    # check size
+    if type(size) is not int or size < 0:
+        raise TypeError(f'size should be a nonnegative integer, not {size} of {type(size)}')
+
+    # check mode
+    mode = _validate_individual_mode(mode)
+
+    # check select:
+    mode_list = []
+    if select is None:
+        mode_list.append(mode)
+    elif type(select) is str:
+        if select.lower() == 'all':
+            mode_list = list(range(mode + 1))
+    elif type(select) is list:
+        if len(select) == 1:
+            item = _validate_individual_mode(select[0])
+            if item != mode:
+                raise ValueError(f'Please select mode={select[0]} instead')
+        for item in select:
+            item = _validate_individual_mode(item)
+            if item > mode:
+                raise ValueError(f'selected mode {item} bigger than {mode}')
+            mode_list.append(item)
+    return sorted(mode_list)
