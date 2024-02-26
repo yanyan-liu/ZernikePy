@@ -75,7 +75,6 @@ def zernike_polynomials(mode: tp.Union[int, str] = 'defocus',
         n += 1
 
     # compute the polynomial(s)
-    print(pairs, len(pairs))
     n_pairs  = len(pairs)
     if n_pairs == 0:
         raise ValueError(f'No Zernike polynomial of mode(s): {orders} found')
