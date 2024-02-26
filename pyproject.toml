@@ -1,12 +1,22 @@
 [project]
 name = "pyzernike"
 version = "0.0.1"
-authors = [
-  { name="Yan Liu", email="yanyan@ik.me" },
+dependencies = [
+  "numpy",
+  "scipy",
+  "matplotlib"
 ]
-description = "A light-weight Python package to generate individual or a series of Zernike polynomials of arbitrary order with visualization."
+authors = [
+  {name = "Yan Liu", email = "yanyan@ik.me"}
+]
+maintainers = [
+  {name = "Yan Liu", email = "yanyan@ik.me"}
+]
+
+description = "A minimalistic Python package to generate individual or a series of Zernike polynomials of arbitrary orders with visualization."
 readme = "README.md"
 requires-python = ">=3.8"
+keywords = ["zernike", "psf", "optics", "polynomials", "basis"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -15,4 +25,5 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/yanyan-liu/pyzernike"
+Repository = "https://github.com/yanyan-liu/pyzernike"
 Issues = "https://github.com/yanyan-liu/pyzernike/issues"
