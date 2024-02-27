@@ -2,7 +2,7 @@ import typing as tp
 
 import numpy as np
 from scipy.special import binom
-from pyzernike.plots import visualize_all, visualize_one
+from zernikepy.plots import visualize_all, visualize_one
 
 ModeType = tp.Union[int, str]
 

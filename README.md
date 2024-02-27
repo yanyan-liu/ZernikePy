@@ -1,9 +1,9 @@
-_Pyzernike_ is a minimalistic Python library to compute and visualize Zernike polynomials of any given orders.
+_ZernikePy_ is a minimalistic Python library to compute and visualize Zernike polynomials of any given orders.
 A typical usage is to generate basis functions for phase modulation in optics.
 
 # Installation
 ```
-pip install pyzernike
+pip install ZernikePy
 ```
 
 # Requirements
@@ -16,7 +16,7 @@ matplotlib
 # How to use
 After installation, first import the main function from the library
 ```
-from pyzernike import zernike_polynomials
+from ZernikePy import zernike_polynomials
 ```
 
 ## Examples

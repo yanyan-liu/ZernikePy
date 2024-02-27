@@ -1,5 +1,5 @@
 [project]
-name = "pyzernike"
+name = "ZernikePy"
 version = "0.0.1"
 dependencies = [
   "numpy",
@@ -24,6 +24,6 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yanyan-liu/pyzernike"
-Repository = "https://github.com/yanyan-liu/pyzernike"
-Issues = "https://github.com/yanyan-liu/pyzernike/issues"
+Homepage = "https://github.com/yanyan-liu/ZernikePy"
+Repository = "https://github.com/yanyan-liu/ZernikePy"
+Issues = "https://github.com/yanyan-liu/ZernikePy/issues"
