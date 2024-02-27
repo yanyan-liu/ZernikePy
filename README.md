@@ -16,7 +16,7 @@ matplotlib
 # How to use
 After installation, first import the main function from the library
 ```
-from ZernikePy import zernike_polynomials
+from zernikepy import zernike_polynomials
 ```
 
 ## Examples
