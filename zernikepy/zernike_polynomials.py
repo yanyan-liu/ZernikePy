@@ -80,11 +80,11 @@ def zernike_polynomials(mode: tp.Union[int, str] = 'defocus',
         raise ValueError(f'No Zernike polynomial of mode(s): {orders} found')
     elif n_pairs == 1:
         n, l = pairs[0]
-        output = _zernike_nl(n, l, rho, phi, radius)
+        output = zernike_nl(n, l, rho, phi, radius)
         if show:
             visualize_one(output, orders[0], **kwargs)
     else:
-        output = np.dstack([_zernike_nl(n, l, rho, phi, radius) for (n, l) in pairs])
+        output = np.dstack([zernike_nl(n, l, rho, phi, radius) for (n, l) in pairs])
         if show:
             _n, _ = pairs[-1]
             visualize_all(output, orders, _n + 1, **kwargs)
@@ -92,7 +92,7 @@ def zernike_polynomials(mode: tp.Union[int, str] = 'defocus',
     return output
 
 
-def _zernike_nl(n: int, l: int, rho: float, phi: float, radius: float):
+def zernike_nl(n: int, l: int, rho: float, phi: float, radius: float):
     """ Computation of the Zernike polynomial of order n and m in the polar coordinates
 
     Parameters
