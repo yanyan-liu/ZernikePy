@@ -22,16 +22,18 @@ from zernikepy import zernike_polynomials
 ## Examples
 Generate a (256, 256)-sized Zernike polynomial of order 4 (defocusing):
 ```python
-p = zernike_polymonials(mode=4, size=256)
+p = zernike_polynomials(mode=4, size=256)
 ```
 or
 ```python
-p = zernike_polymonials(mode='defocusing', size=256)
+p = zernike_polynomials(mode='defocusing', size=256)
 ```
-Generate the first 55 modes and display them:
+Generate the first 15 modes and display them:
 ```python
-ps = zernike_polymonials(mode=55, select='all', show=True)
+ps = zernike_polynomials(mode=14, select='all', show=True)
 ```
+![Example image of the first 15 modes](docs/images/example_image.png)
+
 Generate the following selected modes defocusing, vertical coma, oblique astigmatism and
 display them:
 ```python
